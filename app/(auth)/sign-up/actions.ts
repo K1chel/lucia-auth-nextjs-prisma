@@ -15,10 +15,10 @@ export async function signUpAction(email: string, password: string) {
       sessionCookie.value,
       sessionCookie.attributes
     );
-  } catch (error) {
+  } catch (error: any) {
     console.log({ error });
     return {
-      errors: "An error occurred. Please try again.",
+      errors: error.message,
     };
   }
 

@@ -18,9 +18,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ShowPassword } from "@/components/show-password";
+import { FormErrorMessage } from "@/components/form-error-message";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -35,10 +37,7 @@ const SignInPage = () => {
     startTransition(() => {
       signInAction(values.email, values.password).then((result) => {
         if (result?.errors) {
-          form.setError("email", {
-            type: "manual",
-            message: result.errors,
-          });
+          setErrorMessage(result.errors);
         }
       });
     });
@@ -62,7 +61,9 @@ const SignInPage = () => {
                     disabled={isPending}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormErrorMessage
+                  error={form.formState.errors.email?.message}
+                />
               </FormItem>
             )}
           />
@@ -88,10 +89,13 @@ const SignInPage = () => {
                     />
                   </div>
                 </FormControl>
-                <FormMessage />
+                <FormErrorMessage
+                  error={form.formState.errors.password?.message}
+                />
               </FormItem>
             )}
           />
+          <FormErrorMessage error={errorMessage} />
           <Button className="w-full" type="submit" disabled={isPending}>
             Sign In
           </Button>

@@ -1,25 +1,26 @@
 "use client";
 
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { registrationSchema } from "@/lib/schemas";
-import { signUpAction } from "./actions";
+import { FormErrorMessage } from "@/components/form-error-message";
+import { ShowPassword } from "@/components/show-password";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { registrationSchema } from "@/lib/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { ShowPassword } from "@/components/show-password";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { signUpAction } from "./actions";
 
 const SignUpPage = () => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
 
@@ -35,10 +36,7 @@ const SignUpPage = () => {
     startTransition(() => {
       signUpAction(values.email, values.password).then((result) => {
         if (result?.errors) {
-          form.setError("email", {
-            type: "manual",
-            message: result.errors,
-          });
+          setErrorMessage(result.errors);
         }
       });
     });
@@ -62,7 +60,9 @@ const SignUpPage = () => {
                     disabled={isPending}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormErrorMessage
+                  error={form.formState.errors.email?.message}
+                />
               </FormItem>
             )}
           />
@@ -88,10 +88,13 @@ const SignUpPage = () => {
                     />
                   </div>
                 </FormControl>
-                <FormMessage />
+                <FormErrorMessage
+                  error={form.formState.errors.password?.message}
+                />
               </FormItem>
             )}
           />
+          <FormErrorMessage error={errorMessage} />
           <Button className="w-full" type="submit" disabled={isPending}>
             Create Account
           </Button>
