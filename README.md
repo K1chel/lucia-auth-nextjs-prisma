@@ -59,4 +59,4 @@ For more information on each of these technologies, you can visit their official
 - [Supabase Documentation](https://supabase.io/docs)
 - [Lucia Auth's documentation](https://lucia-auth-docs.com).
 
-If you have any questions, issues, or just want to contribute to the project, feel free to open an issue or pull request.
+If you have any questions, issues or just want to contribute to the project, feel free to open an issue or pull request.
